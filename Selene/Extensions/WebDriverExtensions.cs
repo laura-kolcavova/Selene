@@ -75,6 +75,57 @@ namespace Selene.Extensions
             return driver.Url.Substring(index + param.Length);
         }
 
+        /// <summary>
+        /// Load new web page at given url.
+        /// </summary>
+        /// <param name="driver">IWebDriver.</param>
+        /// <param name="url">New web page url.</param>
+        public static void NavigateToUrl(IWebDriver driver, string url)
+        {
+            var oldUrl = driver.Url;
+            var newUrl = url;
+
+            if (!oldUrl.EndsWith("/"))
+            {
+                oldUrl += "/";
+            }
+
+            if (!newUrl.EndsWith("/"))
+            {
+                newUrl += "/";
+            }
+
+            if (!string.Equals(oldUrl, newUrl))
+            {
+                Performer.Do(r =>
+                {
+                    driver.Navigate().GoToUrl(url);
+                    driver.WaitForPageRedirection(oldUrl);
+                },
+                new Record
+                {
+                    Action = $"Redirect from {oldUrl} to {newUrl}"
+                });
+               
+            }
+            else
+            {
+                Performer.Do(r =>
+                {
+                    driver.Navigate().Refresh();
+                },
+                new Record
+                {
+                    Action = $"Refresh at {newUrl}"
+                });    
+            }
+        }
+
+        /// <summary>
+        /// Perform focus at element.
+        /// </summary>
+        /// <param name="driver">IWebDriver</param>
+        /// <param name="element">Target element</param>
         public static void Focus(this IWebDriver driver, IWebElement element)
         {
             var js = (IJavaScriptExecutor)driver;
@@ -103,6 +154,27 @@ namespace Selene.Extensions
                                             + "window.scrollBy(0, elementTop-(viewPortHeight/2));";
 
             ((IJavaScriptExecutor)driver).ExecuteScript(scrollElementIntoMiddle, element);
+        }
+
+        /// <summary>
+        /// Waits for page redirection.
+        /// </summary>
+        /// <param name="driver">IWebDriver.</param>
+        /// <param name="oldUrl">Old url.</param>
+        /// <param name="timeout">Wait timeout.</param>
+        public static void WaitForPageRedirection(this IWebDriver driver, string oldUrl, TimeSpan? timeout = null)
+        {
+            if (!timeout.HasValue)
+            {
+                timeout = TimeSpan.FromSeconds(60);
+            }
+
+            var wait = new WebDriverWait(driver, timeout.Value);
+
+            wait.Until(d =>
+            {
+                return driver.Url != oldUrl;
+            });
         }
 
         public static IWebElement WaitUntilFound(this IWebDriver driver, By by, int seconds = 5)

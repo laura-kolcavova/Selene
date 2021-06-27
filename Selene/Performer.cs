@@ -9,70 +9,63 @@ namespace Selene
 
     public static class Performer
     {
-        public enum ExceptionAction
-        {
-            THROW_ERROR,
-            CONTINUE
-        }
-
-        public static bool Do(Action action, ExceptionAction exceptionAction = ExceptionAction.CONTINUE)
+        public static void Do(Action action)
         {
             try
             {
                 action.Invoke();
-                return true;
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                if (Enum.Equals(exceptionAction, ExceptionAction.THROW_ERROR)) throw new Exception(e.Message, e);
-                return false;
+                Log.Fail(e.Message);
+                throw new Exception(e.Message, e);
             }
         }
 
-        public static T Do<T>(Func<T> action, ExceptionAction exceptionAction = ExceptionAction.CONTINUE)
-        {
-            try
-            {
-                var val = action.Invoke();
-                return val;
-            }
-            catch (Exception e)
-            {
-                if (Enum.Equals(exceptionAction, ExceptionAction.THROW_ERROR)) throw new Exception(e.Message, e);
-                return default(T);
-            }
-        }
-
-        public static bool Do(Action<Record> recordedAction, Record record, ExceptionAction exceptionAction = ExceptionAction.CONTINUE)
+        public static void Do(Action<Record> recordedAction, Record record)
         {
             try
             {
                 recordedAction.Invoke(record);
-                Recorder.PassRecord(record);
-                return true;
+                Log.Pass(record);
             }
             catch (Exception e)
             {
-                Recorder.FailRecord(record);
-                if (Enum.Equals(exceptionAction, ExceptionAction.THROW_ERROR)) throw new Exception(e.Message, e);
-                return false;
+                record.Error = e.Message;
+                Log.Fail(record);
+                throw new Exception(e.Message, e);
             }
         }
 
-        public static T Do<T>(Func<Record, T> recordedAction, Record record, ExceptionAction exceptionAction = ExceptionAction.CONTINUE)
+        public static TResult Try<TResult>(Func<TResult> action, out TResult result)
         {
             try
             {
-                var val = recordedAction.Invoke(record);
-                Recorder.PassRecord(record);
-                return val;
+                result = action.Invoke();
+            }
+            catch
+            {
+                result = default(TResult);
+            }
+
+            return result;
+        }
+
+        public static TResult Try<TResult>(Func<Record, TResult> recordedAction, Record record, out TResult result)
+        {
+            try
+            {
+                result = recordedAction.Invoke(record);
+                Log.Pass(record);
             }
             catch (Exception e)
             {
-                Recorder.FailRecord(record);
-                if (Enum.Equals(exceptionAction, ExceptionAction.THROW_ERROR)) throw new Exception(e.Message, e);
-                return default(T);
+                record.Error = e.Message;
+                Log.Fail(record);
+                result = default(TResult);
             }
+
+            return result;
         }
     }
 }

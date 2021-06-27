@@ -5,6 +5,9 @@
 
 namespace Selene
 {
+    /// <summary>
+    /// Wrapper for Log entry.
+    /// </summary>
     public class Record
     {
         /// <summary>
@@ -17,10 +20,26 @@ namespace Selene
         /// </summary>
         public string Response { get; set; }
 
+        /// <summary>
+        /// Gets or sets error message.
+        /// </summary>
+        public string Error { get; set; }
+
         public override string ToString()
         {
-            return $"{Action} -> {Response}";
+            string output = Action;
 
+            if(!string.IsNullOrEmpty(Response))
+            {
+                output += $" -> {Response}";
+            }
+
+            if (!string.IsNullOrEmpty(Error))
+            {
+                output += $" : {Error}";
+            }
+
+            return output;
         }
     }
 }

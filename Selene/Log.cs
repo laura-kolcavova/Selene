@@ -8,7 +8,7 @@ namespace Selene
     using System;
     using System.Collections.Generic;
 
-    public static class Recorder
+    public static class Log
     {
         private static readonly List<string> _log = new List<string>();
 
@@ -17,14 +17,29 @@ namespace Selene
             _log.Add(message);
         }
 
-        public static void PassRecord(Record record)
+        public static void Pass(string message)
         {
-            Entry($"PASS - {record}");
+            Entry($"OK - {message}");
+        }  
+
+        public static void Fail(string message)
+        {
+            Entry($"FAIL - {message}");
         }
 
-        public static void FailRecord(Record record)
+        public static void Entry(Record record)
         {
-            Entry($"FAIL - {record}");
+            Entry(record.ToString());
+        }
+
+        public static void Pass(Record record)
+        {
+            Pass(record.ToString());
+        }
+
+        public static void Fail(Record record)
+        {
+            Fail(record.ToString());
         }
 
         public static IEnumerable<string> GetLog()
