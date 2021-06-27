@@ -7,7 +7,7 @@ namespace Selene.Helpers
 {
     using System;
 
-    public static class FormatHelper
+    public static class Fomrat
     {
         public static string DateToString(DateTime date, string format = "dd.MM.yyyy")
         {

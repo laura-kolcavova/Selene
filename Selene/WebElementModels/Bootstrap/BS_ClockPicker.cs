@@ -31,13 +31,13 @@ namespace Selene.WebElementModels.Bootstrap
             }
             else
             {
-                return FormatHelper.StringToTime(val, Format);
+                return Fomrat.StringToTime(val, Format);
             }
         }
 
         public void EnterTime(TimeSpan time)
         {
-            EnterTime(FormatHelper.TimeToString(time, Format));
+            EnterTime(Fomrat.TimeToString(time, Format));
         }
 
         public void EnterTime(string time)

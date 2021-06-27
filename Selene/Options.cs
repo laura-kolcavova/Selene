@@ -9,6 +9,6 @@ namespace Selene
     {
         public static string AppUrl { get; set; }
 
-        public static int WaitSeconds { get; set; }
+        public static int WaitSeconds { get; set; } = 60;
     }
 }

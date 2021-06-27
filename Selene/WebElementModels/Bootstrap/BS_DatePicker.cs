@@ -24,7 +24,7 @@ namespace Selene.WebElementModels.Bootstrap
 
         public void EnterDate(DateTime date)
         {
-            EnterDate(FormatHelper.DateToString(date, Format));
+            EnterDate(Fomrat.DateToString(date, Format));
         }
 
         public void EnterDate(string date)
@@ -105,7 +105,7 @@ namespace Selene.WebElementModels.Bootstrap
             }
             else
             {
-                return FormatHelper.StringToDate(Get.Val(this), Format);
+                return Fomrat.StringToDate(Get.Val(this), Format);
             }
         }
 

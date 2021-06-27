@@ -2,13 +2,14 @@
 //  <author>Laura Kolčavová</author>
 //  <date>2021-06-27</date>
 //-----------------------------------------------------------------------
-namespace Selene.Extensions
+namespace Selene
 {
     using OpenQA.Selenium;
     using OpenQA.Selenium.Interactions;
     using OpenQA.Selenium.Internal;
     using OpenQA.Selenium.Remote;
     using OpenQA.Selenium.Support.UI;
+    using Selene.Helpers;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -76,6 +77,29 @@ namespace Selene.Extensions
         }
 
         /// <summary>
+        /// Performs wait action for expected condition.
+        /// </summary>
+        /// <typeparam name="TResult">Return value from expected condition.</typeparam>
+        /// <param name="driver">IWebDriver.</param>
+        /// <param name="condition">Expected condition.</param>
+        /// <param name="timeout">Expiration timeout.</param>
+        /// <param name="exceptionTypes">Exceptions to be ignored while waiting for expected condition.</param>
+        /// <returns>Expected condition result.</returns>
+        public static TResult WaitFor<TResult>(this IWebDriver driver, Func<IWebDriver, TResult> condition, TimeSpan? timeout = null, params Type[] exceptionTypes)
+        {
+            if (!timeout.HasValue)
+            {
+                timeout = TimeSpan.FromSeconds(Options.WaitSeconds);
+            }
+
+            var wait = new WebDriverWait(driver, timeout.Value);
+
+            wait.IgnoreExceptionTypes(exceptionTypes);
+
+            return wait.Until(condition);
+        }
+
+        /// <summary>
         /// Load new web page at given relative url.
         /// </summary>
         /// <param name="driver">IWebDriver.</param>
@@ -103,7 +127,7 @@ namespace Selene.Extensions
             if (!string.Equals(oldUrl, newUrl))
             {
                 driver.Navigate().GoToUrl(url);
-                driver.WaitForPageRedirection(oldUrl);
+                driver.WaitFor(Helpers.ExpectedConditions.PageRedirected(oldUrl));
             }
             else
             {
@@ -144,85 +168,6 @@ namespace Selene.Extensions
                                             + "window.scrollBy(0, elementTop-(viewPortHeight/2));";
 
             ((IJavaScriptExecutor)driver).ExecuteScript(scrollElementIntoMiddle, element);
-        }
-
-        /// <summary>
-        /// Waits for page redirection.
-        /// </summary>
-        /// <param name="driver">IWebDriver.</param>
-        /// <param name="oldUrl">Old url.</param>
-        /// <param name="timeout">Wait timeout.</param>
-        public static void WaitForPageRedirection(this IWebDriver driver, string oldUrl, TimeSpan? timeout = null)
-        {
-            if (!timeout.HasValue)
-            {
-                timeout = TimeSpan.FromSeconds(60);
-            }
-
-            var wait = new WebDriverWait(driver, timeout.Value);
-
-            wait.Until(d =>
-            {
-                return driver.Url != oldUrl;
-            });
-        }
-
-        public static IWebElement WaitUntilFound(this IWebDriver driver, By by, int seconds = 5)
-        {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
-            return wait.Until(e => e.FindElement(by));
-        }
-
-        public static IWebElement WaitUntilVisible(IWebDriver driver, By by, int seconds = 5)
-        {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
-            return wait.Until(e =>
-            {
-                var el = e.FindElement(by);
-                if (el.Displayed) return el;
-                return null;
-            }
-            );
-        }
-
-        public static IWebElement WaitUntilVisible(this IWebDriver driver, IWebElement el, int seconds = 5)
-        {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
-            return wait.Until(e =>
-            {
-                if (el.Displayed) return el;
-                return null;
-            }
-            );
-        }
-
-        public static bool WaitUntilRemoved(this IWebDriver driver, IWebElement el, int seconds = 5)
-        {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
-            return wait.Until(e =>
-            {
-                if (IsElementAttached(el) == false) return true;
-                return false;
-            }
-        );
-        }
-
-        public static IAlert WaitUntilAlertIsPresent(this IWebDriver driver, int seconds = 5)
-        {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
-            return wait.Until(ExpectedConditions.AlertIsPresent());
-        }
-
-        private static bool IsElementAttached(IWebElement el)
-        {
-            try
-            {
-                return el.Displayed == true;
-            }
-            catch
-            {
-                return false;
-            }
         }
     }
 }

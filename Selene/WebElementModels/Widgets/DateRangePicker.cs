@@ -32,12 +32,13 @@ namespace Selene.WebElementModels.Widgets
         }
         public void EnterDate(DateTime date)
         {
-            EnterDate(FormatHelper.DateToString(date, Format));
+            EnterDate(Fomrat.DateToString(date, Format));
         }
 
         public void EnterDate(string date)
         {
             Set.Text(this, date, true);
+    
             //Driver.WaitForAndSendKeys(WrappedElement, date, log);
         }
 
@@ -79,7 +80,7 @@ namespace Selene.WebElementModels.Widgets
             }
             else
             {
-                return FormatHelper.StringToDate(Get.Val(this), Format);
+                return Fomrat.StringToDate(Get.Val(this), Format);
             }
         }
 
