@@ -27,9 +27,7 @@ namespace Selene.Extensions
            where TWebElementModel : WebElementModel
         {
             var wrappedElement = driver.FindElement(by);
-
             var webElementModel = (TWebElementModel)Activator.CreateInstance(typeof(TWebElementModel), driver, wrappedElement);
-
             return webElementModel;
         }
 
@@ -78,48 +76,38 @@ namespace Selene.Extensions
         }
 
         /// <summary>
-        /// Load new web page at given url.
+        /// Load new web page at given relative url.
         /// </summary>
         /// <param name="driver">IWebDriver.</param>
-        /// <param name="url">New web page url.</param>
-        public static void NavigateToUrl(IWebDriver driver, string url)
+        /// <param name="url">New web page relative url.</param>
+        public static void NavigateToRelativeUrl(IWebDriver driver, string url)
         {
             var oldUrl = driver.Url;
-            var newUrl = url;
-
-            if (!oldUrl.EndsWith("/"))
-            {
-                oldUrl += "/";
-            }
+            var newUrl = Options.AppUrl;
 
             if (!newUrl.EndsWith("/"))
             {
                 newUrl += "/";
             }
 
+            if (!string.IsNullOrWhiteSpace(url))
+            {
+                if (url.StartsWith("~/") || url.StartsWith("/"))
+                {
+                    url = url.Substring(1);
+                }
+
+                newUrl += url;
+            }
+
             if (!string.Equals(oldUrl, newUrl))
             {
-                Performer.Do(r =>
-                {
-                    driver.Navigate().GoToUrl(url);
-                    driver.WaitForPageRedirection(oldUrl);
-                },
-                new Record
-                {
-                    Action = $"Redirect from {oldUrl} to {newUrl}"
-                });
-               
+                driver.Navigate().GoToUrl(url);
+                driver.WaitForPageRedirection(oldUrl);
             }
             else
             {
-                Performer.Do(r =>
-                {
-                    driver.Navigate().Refresh();
-                },
-                new Record
-                {
-                    Action = $"Refresh at {newUrl}"
-                });    
+                driver.Navigate().Refresh();
             }
         }
 
