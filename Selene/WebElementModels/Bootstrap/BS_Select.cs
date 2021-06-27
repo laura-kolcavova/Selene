@@ -7,7 +7,6 @@ namespace Selene.WebElementModels.Bootstrap
 {
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.UI;
-    using Selene.Extensions;
     using Selene.Helpers;
     using System.Collections.ObjectModel;
     using System.Linq;
@@ -42,7 +41,7 @@ namespace Selene.WebElementModels.Bootstrap
         private void OpenDropdownMenu()
         {
             DropdownToggle.Click();
-            Driver.WaitUntilVisible(Listbox);
+            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(Listbox));
         }
 
         public void SelectByIndex(int index)
@@ -51,7 +50,7 @@ namespace Selene.WebElementModels.Bootstrap
 
             BS_Options.ElementAt(index).Click();
 
-            Driver.WaitUntilRemoved(DropdownMenu);
+            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
         }
 
         public void SelectByValue(string value)
@@ -70,7 +69,7 @@ namespace Selene.WebElementModels.Bootstrap
 
             BS_Options.ElementAt(index).Click();
 
-            Driver.WaitUntilRemoved(DropdownMenu);
+            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
         }
 
         public void SelectByText(string text)
@@ -80,7 +79,7 @@ namespace Selene.WebElementModels.Bootstrap
             BS_Options.FirstOrDefault(o => string.Equals(o.Text, text))
                 .Click();
 
-           Driver.WaitUntilRemoved(DropdownMenu);
+            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
         }
 
         public void TypeInSearch(string value, bool clear = false)
@@ -91,8 +90,7 @@ namespace Selene.WebElementModels.Bootstrap
 
             Set.Text(TxtSearch, value, clear);
 
-            Driver.WaitUntilVisible(Listbox);
-
+            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(Listbox));
         }
     }
 }

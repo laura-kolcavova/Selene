@@ -9,7 +9,6 @@ namespace Selene
     using System.Collections.Generic;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Remote;
-    using Selene.Extensions;
 
     /// <summary>
     /// Wrapper for  IWebDriver ConcurrentQueue.
