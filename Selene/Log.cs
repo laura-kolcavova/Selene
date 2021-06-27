@@ -42,7 +42,7 @@ namespace Selene
             Fail(record.ToString());
         }
 
-        public static IEnumerable<string> GetLog()
+        public static IEnumerable<string> GetEntries()
         {
             return _log;
         }

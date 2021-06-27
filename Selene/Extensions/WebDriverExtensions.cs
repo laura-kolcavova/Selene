@@ -24,11 +24,13 @@ namespace Selene.Extensions
         /// <param name="by">The locating mechanism to use.</param>
         /// <returns>The first matching OpenQA.Selenium.IWebElement on the current context.</returns>
         public static IWebElementModel FindElement<TWebElementModel>(this IWebDriver driver, By by)
-           where TWebElementModel : IWebElementModel
+           where TWebElementModel : WebElementModel
         {
             var wrappedElement = driver.FindElement(by);
-            var webElementModel = Activator.CreateInstance(typeof(TWebElementModel), driver, wrappedElement);
-            return webElementModel as IWebElementModel;
+
+            var webElementModel = (TWebElementModel)Activator.CreateInstance(typeof(TWebElementModel), driver, wrappedElement);
+
+            return webElementModel;
         }
 
         /// <summary>
@@ -39,14 +41,14 @@ namespace Selene.Extensions
         /// <param name="by">The locating mechanism to use.</param>
         /// <returns>A ReadOnlyCollection<T> of all IWebElementModel matching the current criteria, or an empty list if nothing matches.</returns>
         public static ReadOnlyCollection<IWebElementModel> FindElements<TWebElementModel>(this IWebDriver driver, By by)
-            where TWebElementModel : IWebElementModel
+            where TWebElementModel : WebElementModel
         {
             var list = new List<IWebElementModel>();
             var wrappedElements = driver.FindElements(by);
 
             foreach (var wrappedElement in wrappedElements)
             {
-                list.Add(Activator.CreateInstance(typeof(TWebElementModel), driver, wrappedElement) as IWebElementModel);
+                list.Add((TWebElementModel)Activator.CreateInstance(typeof(TWebElementModel), driver, wrappedElement));
             }
 
             return list.AsReadOnly();
