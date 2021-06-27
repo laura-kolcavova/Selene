@@ -13,7 +13,7 @@ namespace Selene
 
     public abstract class WebElementModel : IWebElementModel
     {
-        protected readonly IWebDriver Driver;
+        protected IWebDriver Driver { get; }
 
         /// <summary>
         /// Gets WrappedElement

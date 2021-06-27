@@ -62,6 +62,19 @@ namespace Selene.Extensions
             return ((RemoteWebDriver)driver).SessionId;
         }
 
+        /// <summary>
+        /// Gets parameter value from current URL.
+        /// </summary>
+        /// <param name="driver">IWebDriver.</param>
+        /// <param name="name">Parameter name.</param>
+        /// <returns>Parameter string value.</returns>
+        public static string GetUrlParam(this IWebDriver driver, string name)
+        {
+            string param = name += "=";
+            int index = driver.Url.IndexOf(param);
+            return driver.Url.Substring(index + param.Length);
+        }
+
         public static void Focus(this IWebDriver driver, IWebElement element)
         {
             var js = (IJavaScriptExecutor)driver;

@@ -5,7 +5,7 @@
 
 namespace Selene.Pages
 {
-    interface IView
+    public interface IView
     {
         void Load();
     }
