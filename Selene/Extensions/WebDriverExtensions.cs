@@ -107,12 +107,7 @@ namespace Selene
         public static void NavigateToRelativeUrl(IWebDriver driver, string url)
         {
             var oldUrl = driver.Url;
-            var newUrl = Options.AppUrl;
-
-            if (!newUrl.EndsWith("/"))
-            {
-                newUrl += "/";
-            }
+            var newUrl = new Uri(Options.AppUrl).AbsolutePath;
 
             if (!string.IsNullOrWhiteSpace(url))
             {
