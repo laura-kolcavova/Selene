@@ -11,18 +11,18 @@ namespace Selene
     using OpenQA.Selenium.Remote;
 
     /// <summary>
-    /// Wrapper for  IWebDriver ConcurrentQueue.
+    /// Wrapper class for IWebDriver ConcurrentQueue.
     /// </summary>
-    public class WebDriverPool
+    public class WebDriverQueue
     {
         private readonly ConcurrentQueue<IWebDriver> driverQueue;
 
         private readonly Dictionary<SessionId, SessionInfo> sessions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebDriverPool"/> class.
+        /// Initializes a new instance of the <see cref="WebDriverQueue"/> class.
         /// </summary>
-        public WebDriverPool()
+        public WebDriverQueue()
         {
             driverQueue = new ConcurrentQueue<IWebDriver>();
             sessions = new Dictionary<SessionId, SessionInfo>();
