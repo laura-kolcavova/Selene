@@ -9,15 +9,17 @@ namespace Selene
 
     public static class Performer
     {
-        public static void Do(Action action)
+        public static void Do(Action action, string logMessage)
         {
             try
             {
                 action.Invoke();
+                Log.Pass(logMessage);
             }
             catch(Exception e)
             {
-                Log.Fail(e.Message);
+                logMessage += $" : {e.Message}";
+                Log.Fail(logMessage);
                 throw new Exception(e.Message, e);
             }
         }
@@ -45,7 +47,24 @@ namespace Selene
             }
             catch
             {
-                result = default(TResult);
+                result = default;
+            }
+
+            return result;
+        }
+
+        public static TResult Try<TResult>(Func<TResult> recordedAction, string logMessage, out TResult result)
+        {
+            try
+            {
+                result = recordedAction.Invoke();
+                Log.Pass(logMessage);
+            }
+            catch (Exception e)
+            {
+                result = default;
+                logMessage += $" : {e.Message}";
+                Log.Fail(logMessage);
             }
 
             return result;
@@ -60,9 +79,9 @@ namespace Selene
             }
             catch (Exception e)
             {
+                result = default;
                 record.Error = e.Message;
                 Log.Fail(record);
-                result = default(TResult);
             }
 
             return result;

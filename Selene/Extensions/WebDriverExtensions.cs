@@ -9,16 +9,17 @@ namespace Selene
     using OpenQA.Selenium.Internal;
     using OpenQA.Selenium.Remote;
     using OpenQA.Selenium.Support.UI;
-    using Selene.Helpers;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Text;
 
+    /// <summary>
+    /// Extension methods for IWebDriver object.
+    /// </summary>
     public static class WebDriverExtensions
     {
         /// <summary>
-        /// Extension: Finds the first Selene.IWebElementModel on the current context
+        /// Finds the first Selene.IWebElementModel on the current context.
         /// </summary>
         /// <typeparam name="TWebElementModel"></typeparam>
         /// <param name="driver">Extented object.</param>
@@ -33,7 +34,7 @@ namespace Selene
         }
 
         /// <summary>
-        ///  Extension: Finds all Selene.IWebElementModel on the current context
+        /// Finds all Selene.IWebElementModel on the current context.
         /// </summary>
         /// <typeparam name="TWebElementModel"></typeparam>
         /// <param name="driver">Extented object.</param>
@@ -56,7 +57,7 @@ namespace Selene
         /// <summary>
         /// Gets SessionId of WebDriverInstance.
         /// </summary>
-        /// <param name="driver">Web driver.</param>
+        /// <param name="driver">Extented object.</param>
         /// <returns>SessionId of WebDriverInstance.</returns>
         public static SessionId GetSessionId(this IWebDriver driver)
         {
@@ -66,7 +67,7 @@ namespace Selene
         /// <summary>
         /// Gets parameter value from current URL.
         /// </summary>
-        /// <param name="driver">IWebDriver.</param>
+        /// <param name="driver">Extented object.</param>
         /// <param name="name">Parameter name.</param>
         /// <returns>Parameter string value.</returns>
         public static string GetUrlParam(this IWebDriver driver, string name)
@@ -79,8 +80,8 @@ namespace Selene
         /// <summary>
         /// Performs wait action for expected condition.
         /// </summary>
-        /// <typeparam name="TResult">Return value from expected condition.</typeparam>
-        /// <param name="driver">IWebDriver.</param>
+        /// <typeparam name="TResult">Returned value from expected condition.</typeparam>
+        /// <param name="driver">Extented object.</param>
         /// <param name="condition">Expected condition.</param>
         /// <param name="timeout">Expiration timeout.</param>
         /// <param name="exceptionTypes">Exceptions to be ignored while waiting for expected condition.</param>
@@ -100,9 +101,9 @@ namespace Selene
         }
 
         /// <summary>
-        /// Load new web page at given relative url.
+        /// Loads new web page at given relative url.
         /// </summary>
-        /// <param name="driver">IWebDriver.</param>
+        /// <param name="driver">Extented object.</param>
         /// <param name="url">New web page relative url.</param>
         public static void NavigateToRelativeUrl(IWebDriver driver, string url)
         {
@@ -131,31 +132,51 @@ namespace Selene
         }
 
         /// <summary>
-        /// Perform focus at element.
+        /// Gives focus to a web element.
         /// </summary>
-        /// <param name="driver">IWebDriver</param>
-        /// <param name="element">Target element</param>
+        /// <param name="driver">Extented object.</param>
+        /// <param name="element">Target web element.</param>
         public static void Focus(this IWebDriver driver, IWebElement element)
         {
             var js = (IJavaScriptExecutor)driver;
             js.ExecuteScript("arguments[0].focus();", element);
         }
 
+        /// <summary>
+        /// Gives focus to a wrapped web element.
+        /// </summary>
+        /// <param name="driver">Extented object.</param>
+        /// <param name="wrapsElement">Target wrapping element.</param>
         public static void Focus(this IWebDriver driver, IWrapsElement wrapsElement)
         {
             Focus(driver, wrapsElement.WrappedElement);
         }
 
+        /// <summary>
+        /// Removes focus from a web element.
+        /// </summary>
+        /// <param name="driver">Extented object.</param>
+        /// <param name="element">Fcoused web element.</param>
         public static void Unfocus(this IWebDriver driver, IWebElement element)
         {
             new Actions(driver).SendKeys(element, Keys.Tab).Perform();
         }
 
+        /// <summary>
+        /// Removes focus from a wrapped web element.
+        /// </summary>
+        /// <param name="driver">Extented object.</param>
+        /// <param name="wrapsElement">Focused wrapping element.</param>
         public static void Unfocus(this IWebDriver driver, IWrapsElement wrapsElement)
         {
             Unfocus(driver, wrapsElement.WrappedElement);
         }
 
+        /// <summary>
+        /// Scrolls to web element.
+        /// </summary>
+        /// <param name="driver">Extented object.</param>
+        /// <param name="element">Target web element.</param>
         public static void ScrollToElement(this IWebDriver driver, IWebElement element)
         {
             string scrollElementIntoMiddle = "var viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);"
