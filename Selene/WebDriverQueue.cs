@@ -33,7 +33,7 @@ namespace Selene
         /// </summary>
         /// <param name="createDriverFunc">Delegate function for creating WebDriver instance.</param>
         /// <returns>Current IWebDriver instance.</returns>
-        public IWebDriver Create(Func<IWebDriver> createDriverFunc)
+        public IWebDriver Obtain(Func<IWebDriver> createDriverFunc)
         {
             if (!driverQueue.TryDequeue(out IWebDriver obtainedDriver))
             {
