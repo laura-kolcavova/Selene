@@ -37,14 +37,11 @@ namespace Selene
         {
             if (!driverQueue.TryDequeue(out IWebDriver obtainedDriver))
             {
-                var driver = createDriverFunc();
-                sessions.Add(driver.GetSessionId(), new SessionInfo());
-                return driver;
+                obtainedDriver = createDriverFunc();
+                sessions.Add(obtainedDriver.GetSessionId(), new SessionInfo());
             }
-            else
-            {
-                return obtainedDriver;
-            }
+            
+            return obtainedDriver;
         }
 
         /// <summary>
