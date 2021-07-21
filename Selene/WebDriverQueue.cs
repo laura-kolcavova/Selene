@@ -6,7 +6,6 @@ namespace Selene
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Remote;
 
@@ -17,7 +16,7 @@ namespace Selene
     {
         private readonly ConcurrentQueue<IWebDriver> driverQueue;
 
-        private readonly Dictionary<SessionId, SessionInfo> sessions;
+        private readonly ConcurrentDictionary<SessionId, SessionInfo> sessions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebDriverQueue"/> class.
@@ -25,7 +24,7 @@ namespace Selene
         public WebDriverQueue()
         {
             driverQueue = new ConcurrentQueue<IWebDriver>();
-            sessions = new Dictionary<SessionId, SessionInfo>();
+            sessions = new ConcurrentDictionary<SessionId, SessionInfo>();
         }
 
         /// <summary>
@@ -38,7 +37,7 @@ namespace Selene
             if (!driverQueue.TryDequeue(out IWebDriver obtainedDriver))
             {
                 obtainedDriver = createDriverFunc();
-                sessions.Add(obtainedDriver.GetSessionId(), new SessionInfo());
+                sessions.TryAdd(obtainedDriver.GetSessionId(), new SessionInfo());
             }
             
             return obtainedDriver;
