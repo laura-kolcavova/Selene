@@ -1,24 +1,18 @@
 ﻿//-----------------------------------------------------------------------
 //  <author>Laura Kolčavová</author>
-//  <date>2021-06-27</date>
+//  <date>2021-07-23</date>
 //-----------------------------------------------------------------------
-
-namespace Selene.Pages
+namespace Selene
 {
     using OpenQA.Selenium;
 
-    public abstract class PartialView : IView
+    public abstract class UIComponent
     {
         protected readonly IWebDriver driver;
 
-        public Page Parent { get; }
-
-        protected PartialView(IWebDriver driver, Page parent)
+        protected UIComponent(IWebDriver driver)
         {
             this.driver = driver;
-            Parent = parent;
         }
-
-        public abstract void Load();
     }
 }

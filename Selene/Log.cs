@@ -5,7 +5,6 @@
 
 namespace Selene
 {
-    using System;
     using System.Collections.Generic;
 
     public static class Log
@@ -20,7 +19,7 @@ namespace Selene
         public static void Pass(string message)
         {
             Entry($"OK - {message}");
-        }  
+        }
 
         public static void Fail(string message)
         {

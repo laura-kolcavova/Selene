@@ -3,14 +3,14 @@
 //  <date>2021-06-27</date>
 //-----------------------------------------------------------------------
 
-namespace Selene.WebElementModels.Bootstrap
+namespace Selene.UI.Bootstrap
 {
     using OpenQA.Selenium;
     using OpenQA.Selenium.Internal;
     using Selene.Helpers;
     using System;
 
-    public class BS_DatePicker : WebElementModel
+    public class BS_DatePickerElement : UIElement
     {
         public string Format { get; set; } = "dd.MM.yyyy";
 
@@ -18,7 +18,7 @@ namespace Selene.WebElementModels.Bootstrap
 
         public DateTime Date => GetDate();
 
-        public BS_DatePicker(IWebDriver driver, IWebElement wrappedElement) : base(driver, wrappedElement)
+        public BS_DatePickerElement(IWebDriver driver, IWebElement wrappedElement) : base(driver, wrappedElement)
         {
         }
 
@@ -55,7 +55,6 @@ namespace Selene.WebElementModels.Bootstrap
             {
                 GoToDay(date.Day, picker_days);
             }
-
         }
 
         private void GoToYear(int year, Picker picker_months, Picker picker_days)
@@ -99,7 +98,7 @@ namespace Selene.WebElementModels.Bootstrap
 
         private DateTime GetDate()
         {
-            if (Get.Val(this) == string.Empty)
+            if (Get.Val(this)?.Length == 0)
             {
                 return DateTime.Today;
             }

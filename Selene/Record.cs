@@ -6,7 +6,7 @@
 namespace Selene
 {
     /// <summary>
-    /// Wrapper class for Log entry.
+    /// Wrapper class for <see cref="Selene.Log"/> entry.
     /// </summary>
     public class Record
     {

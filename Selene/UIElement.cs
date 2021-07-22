@@ -6,14 +6,11 @@ namespace Selene
 {
     using OpenQA.Selenium;
     using OpenQA.Selenium.Internal;
+    using Selene.Extensions;
 
-    public interface IWebElementModel : IWrapsElement
+    public abstract class UIElement : IWrapsElement
     {
-    }
-
-    public abstract class WebElementModel : IWebElementModel
-    {
-        protected IWebDriver Driver { get; }
+        protected readonly IWebDriver driver;
 
         /// <summary>
         /// Gets WrappedElement
@@ -21,14 +18,20 @@ namespace Selene
         public IWebElement WrappedElement { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebElementModel"/> class.
+        /// Initializes a new instance of the <see cref="UIElement"/> class.
         /// </summary>
         /// <param name="driver">Web driver.</param>
         /// <param name="wrappedElement">Wrapped element.</param>
-        protected WebElementModel(IWebDriver driver, IWebElement wrappedElement)
+        protected UIElement(IWebDriver driver, IWebElement wrappedElement)
         {
-            Driver = driver;
+            this.driver = driver;
             WrappedElement = wrappedElement;
         }
+
+        //protected UIElement(IWebElement wrappedElement)
+        //{
+        //    this.driver = wrappedElement.GetDriver();
+        //    WrappedElement = wrappedElement;
+        //}
     }
 }

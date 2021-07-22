@@ -3,7 +3,7 @@
 //  <date>2021-06-27</date>
 //-----------------------------------------------------------------------
 
-namespace Selene.WebElementModels.Bootstrap
+namespace Selene.UI.Bootstrap
 {
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.UI;
@@ -11,7 +11,7 @@ namespace Selene.WebElementModels.Bootstrap
     using System.Collections.ObjectModel;
     using System.Linq;
 
-    public class BS_Select : WebElementModel
+    public class BS_SelectElement : UIElement
     {
         public SelectElement SelectElement { get; }
 
@@ -31,7 +31,7 @@ namespace Selene.WebElementModels.Bootstrap
 
         public bool IsOpen => DropdownMenu.Displayed;
 
-        public BS_Select(IWebDriver driver, IWebElement
+        public BS_SelectElement(IWebDriver driver, IWebElement
             wrappedElement) : base(driver, wrappedElement)
         {
             SelectElement = new SelectElement(wrappedElement);
@@ -41,16 +41,16 @@ namespace Selene.WebElementModels.Bootstrap
         private void OpenDropdownMenu()
         {
             DropdownToggle.Click();
-            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(Listbox));
+            driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(Listbox));
         }
 
         public void SelectByIndex(int index)
         {
             if (!IsOpen) OpenDropdownMenu();
 
-            BS_Options.ElementAt(index).Click();
+            BS_Options[index].Click();
 
-            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
+            driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
         }
 
         public void SelectByValue(string value)
@@ -67,19 +67,19 @@ namespace Selene.WebElementModels.Bootstrap
                     return string.Equals(o_value, value);
                 });
 
-            BS_Options.ElementAt(index).Click();
+            BS_Options[index].Click();
 
-            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
+            driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
         }
 
         public void SelectByText(string text)
         {
             if (!IsOpen) OpenDropdownMenu();
 
-            BS_Options.FirstOrDefault(o => string.Equals(o.Text, text))
+            BS_Options.FirstOrDefault(o => string.Equals(o.Text, text))?
                 .Click();
 
-            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
+            driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
         }
 
         public void TypeInSearch(string value, bool clear = false)
@@ -90,7 +90,7 @@ namespace Selene.WebElementModels.Bootstrap
 
             Set.Text(TxtSearch, value, clear);
 
-            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(Listbox));
+            driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(Listbox));
         }
     }
 }

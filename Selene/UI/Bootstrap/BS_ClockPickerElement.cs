@@ -3,7 +3,7 @@
 //  <date>2021-06-27</date>
 //-----------------------------------------------------------------------
 
-namespace Selene.WebElementModels.Bootstrap
+namespace Selene.UI.Bootstrap
 {
     using OpenQA.Selenium;
     using OpenQA.Selenium.Internal;
@@ -11,13 +11,13 @@ namespace Selene.WebElementModels.Bootstrap
     using System;
     using System.Collections.ObjectModel;
 
-    public class BS_ClockPicker : WebElementModel
+    public class BS_ClockPickerElement : UIElement
     {
         public string Format { get; set; } = @"hh\:mm";
 
         public TimeSpan Time => GetTime();
 
-        public BS_ClockPicker(IWebDriver driver, IWebElement wrappedElement) : base(driver, wrappedElement)
+        public BS_ClockPickerElement(IWebDriver driver, IWebElement wrappedElement) : base(driver, wrappedElement)
         {
         }
 

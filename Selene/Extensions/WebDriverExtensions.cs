@@ -6,7 +6,6 @@ namespace Selene
 {
     using OpenQA.Selenium;
     using OpenQA.Selenium.Interactions;
-    using OpenQA.Selenium.Internal;
     using OpenQA.Selenium.Remote;
     using OpenQA.Selenium.Support.UI;
     using System;
@@ -14,51 +13,49 @@ namespace Selene
     using System.Collections.ObjectModel;
 
     /// <summary>
-    /// Extension methods for IWebDriver object.
+    /// Extension methods for <see cref="IWebDriver"/> interface.
     /// </summary>
     public static class WebDriverExtensions
     {
         /// <summary>
-        /// Finds the first Selene.IWebElementModel on the current context.
+        /// Finds the first <see cref="IWebElement"/> on the current context using the given method and recreates it to instance of derived class of <see cref="UIElement"/>.
         /// </summary>
-        /// <typeparam name="TWebElementModel"></typeparam>
-        /// <param name="driver">Extented object.</param>
+        /// <typeparam name="TUIElement">Derived class of <see cref="UIElement"/>.</typeparam>
+        /// <param name="driver">Context.</param>
         /// <param name="by">The locating mechanism to use.</param>
-        /// <returns>The first matching OpenQA.Selenium.IWebElement on the current context.</returns>
-        public static IWebElementModel FindElement<TWebElementModel>(this IWebDriver driver, By by)
-           where TWebElementModel : WebElementModel
+        /// <returns>The first matching <see cref="IWebElement"/> on the current context recreated to instance of derived class of <see cref="UIElement"/>.</returns>
+        public static TUIElement FindElement<TUIElement>(this IWebDriver driver, By by)
+           where TUIElement : UIElement
         {
             var wrappedElement = driver.FindElement(by);
-            var webElementModel = Activator.CreateInstance(typeof(TWebElementModel), driver, wrappedElement) as TWebElementModel;
-            return webElementModel;
+            return Activator.CreateInstance(typeof(TUIElement), driver, wrappedElement) as TUIElement;
         }
 
         /// <summary>
-        /// Finds all Selene.IWebElementModel on the current context.
+        /// Finds all <see cref="IWebElement"/> within the current context using the given mechanism and recreates them to instances of derived class of <see cref="UIElement"/>.
         /// </summary>
-        /// <typeparam name="TWebElementModel"></typeparam>
-        /// <param name="driver">Extented object.</param>
+        /// <typeparam name="TUIElement">Derived class of <see cref="UIElement"/>.</typeparam>
+        /// <param name="driver">Context.</param>
         /// <param name="by">The locating mechanism to use.</param>
-        /// <returns>A ReadOnlyCollection<T> of all IWebElementModel matching the current criteria, or an empty list if nothing matches.</returns>
-        public static ReadOnlyCollection<IWebElementModel> FindElements<TWebElementModel>(this IWebDriver driver, By by)
-            where TWebElementModel : WebElementModel
+        /// <returns>A <see cref="ReadOnlyCollection{T}"/> of all <see cref="IWebElement"/> recreated to instances of derived class of <see cref="UIElement"/> matching the current criteria, or an empty list if nothing matches.</returns>
+        public static ReadOnlyCollection<TUIElement> FindElements<TUIElement>(this IWebDriver driver, By by)
+            where TUIElement : UIElement
         {
-            var list = new List<IWebElementModel>();
-            var wrappedElements = driver.FindElements(by);
+            var list = new List<TUIElement>();
 
-            foreach (var wrappedElement in wrappedElements)
+            foreach (var wrappedElement in driver.FindElements(by))
             {
-                list.Add(Activator.CreateInstance(typeof(TWebElementModel), driver, wrappedElement) as TWebElementModel);
+                list.Add(Activator.CreateInstance(typeof(TUIElement), driver, wrappedElement) as TUIElement);
             }
 
             return list.AsReadOnly();
         }
 
         /// <summary>
-        /// Gets SessionId of WebDriverInstance.
+        /// Gets <see cref="SessionId"/> from <see cref="IWebDriver"/>.
         /// </summary>
-        /// <param name="driver">Extented object.</param>
-        /// <returns>SessionId of WebDriverInstance.</returns>
+        /// <param name="driver">Context.</param>
+        /// <returns><see cref="SessionId"/>.</returns>
         public static SessionId GetSessionId(this IWebDriver driver)
         {
             return ((RemoteWebDriver)driver).SessionId;
@@ -69,23 +66,23 @@ namespace Selene
         /// </summary>
         /// <param name="driver">Extented object.</param>
         /// <param name="name">Parameter name.</param>
-        /// <returns>Parameter string value.</returns>
+        /// <returns>Parameter value.</returns>
         public static string GetUrlParam(this IWebDriver driver, string name)
         {
             string param = name += "=";
             int index = driver.Url.IndexOf(param);
-            return driver.Url.Substring(index + param.Length);
+            return driver.Url[(index + param.Length)..];
         }
 
         /// <summary>
-        /// Performs wait action for expected condition.
+        /// Performs <see cref="DefaultWait{IWebDriver}.Until{TResult}(Func{IWebDriver, TResult})"/> method using the given expected condition delegate nad timeout expiration.
         /// </summary>
         /// <typeparam name="TResult">Returned value from expected condition.</typeparam>
-        /// <param name="driver">Extented object.</param>
-        /// <param name="condition">Expected condition.</param>
-        /// <param name="timeout">Expiration timeout.</param>
-        /// <param name="exceptionTypes">Exceptions to be ignored while waiting for expected condition.</param>
-        /// <returns>Expected condition result.</returns>
+        /// <param name="driver">Context.</param>
+        /// <param name="condition">Expected condition delegate.</param>
+        /// <param name="timeout">Timeout expiration.</param>
+        /// <param name="exceptionTypes">Specific types of exceptions to be ignored while waiting for a condition.</param>
+        /// <returns>The expected condition`s return value.</returns>
         public static TResult WaitFor<TResult>(this IWebDriver driver, Func<IWebDriver, TResult> condition, TimeSpan? timeout = null, params Type[] exceptionTypes)
         {
             if (!timeout.HasValue)
@@ -101,29 +98,19 @@ namespace Selene
         }
 
         /// <summary>
-        /// Loads new web page at given relative url.
+        /// Loads a new web page at given URL and then waits to redirect is finished or refreshes page if the URL is the same.
         /// </summary>
-        /// <param name="driver">Extented object.</param>
-        /// <param name="url">New web page relative url.</param>
-        public static void NavigateToRelativeUrl(IWebDriver driver, string url)
+        /// <param name="driver">Context.</param>
+        /// <param name="url">The URL to load. It is best to use a fully qualified URL</param>
+        public static void NavigateToUrl(this IWebDriver driver, string url)
         {
             var oldUrl = driver.Url;
-            var newUrl = new Uri(Options.AppUrl).AbsolutePath;
-
-            if (!string.IsNullOrWhiteSpace(url))
-            {
-                if (url.StartsWith("~/") || url.StartsWith("/"))
-                {
-                    url = url.Substring(1);
-                }
-
-                newUrl += url;
-            }
+            var newUrl = new Uri(url).AbsolutePath;
 
             if (!string.Equals(oldUrl, newUrl))
             {
-                driver.Navigate().GoToUrl(url);
-                driver.WaitFor(Helpers.ExpectedConditions.PageRedirected(oldUrl));
+                driver.Navigate().GoToUrl(newUrl);
+                driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.UrlToBe(newUrl));
             }
             else
             {
@@ -132,10 +119,41 @@ namespace Selene
         }
 
         /// <summary>
-        /// Gives focus to a web element.
+        /// Loads a new web page at given relative URL and then waits to redirect is finished or refreshes page if the URL is the same.
         /// </summary>
-        /// <param name="driver">Extented object.</param>
-        /// <param name="element">Target web element.</param>
+        /// <param name="driver">Context</param>
+        /// <param name="url">The relative URL to load. It is best to use a fully qualified URL</param>
+        public static void NavigateToRelativeUrl(this IWebDriver driver, string url)
+        {
+            var oldUrl = driver.Url;
+            var newUrl = new Uri(Options.AppUrl).AbsolutePath;
+
+            if (!string.IsNullOrWhiteSpace(url))
+            {
+                if (url.StartsWith("~/") || url.StartsWith("/"))
+                {
+                    url = url[1..];
+                }
+
+                newUrl += url;
+            }
+
+            if (!string.Equals(oldUrl, newUrl))
+            {
+                driver.Navigate().GoToUrl(newUrl);
+                driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.UrlToBe(newUrl));
+            }
+            else
+            {
+                driver.Navigate().Refresh();
+            }
+        }
+
+        /// <summary>
+        /// Gives focus to a <see cref="IWebElement"/>.
+        /// </summary>
+        /// <param name="driver">Context.</param>
+        /// <param name="element">Target <see cref="IWebElement"/>.</param>
         public static void Focus(this IWebDriver driver, IWebElement element)
         {
             var js = (IJavaScriptExecutor)driver;
@@ -143,43 +161,23 @@ namespace Selene
         }
 
         /// <summary>
-        /// Gives focus to a wrapped web element.
+        /// Removes focus from a <see cref="IWebElement"/>.
         /// </summary>
-        /// <param name="driver">Extented object.</param>
-        /// <param name="wrapsElement">Target wrapping element.</param>
-        public static void Focus(this IWebDriver driver, IWrapsElement wrapsElement)
-        {
-            Focus(driver, wrapsElement.WrappedElement);
-        }
-
-        /// <summary>
-        /// Removes focus from a web element.
-        /// </summary>
-        /// <param name="driver">Extented object.</param>
-        /// <param name="element">Fcoused web element.</param>
+        /// <param name="driver">Context.</param>
+        /// <param name="element">Fcoused <see cref="IWebElement"/>.</param>
         public static void Unfocus(this IWebDriver driver, IWebElement element)
         {
             new Actions(driver).SendKeys(element, Keys.Tab).Perform();
         }
 
         /// <summary>
-        /// Removes focus from a wrapped web element.
+        /// Scrolls to <see cref="IWebElement"/> using <see cref="IJavaScriptExecutor"/>.
         /// </summary>
-        /// <param name="driver">Extented object.</param>
-        /// <param name="wrapsElement">Focused wrapping element.</param>
-        public static void Unfocus(this IWebDriver driver, IWrapsElement wrapsElement)
-        {
-            Unfocus(driver, wrapsElement.WrappedElement);
-        }
-
-        /// <summary>
-        /// Scrolls to web element.
-        /// </summary>
-        /// <param name="driver">Extented object.</param>
-        /// <param name="element">Target web element.</param>
+        /// <param name="driver">Context.</param>
+        /// <param name="element">Target <see cref="IWebElement"/>.</param>
         public static void ScrollToElement(this IWebDriver driver, IWebElement element)
         {
-            string scrollElementIntoMiddle = "var viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);"
+            const string scrollElementIntoMiddle = "var viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);"
                                             + "var elementTop = arguments[0].getBoundingClientRect().top;"
                                             + "window.scrollBy(0, elementTop-(viewPortHeight/2));";
 

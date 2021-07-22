@@ -5,7 +5,7 @@
 namespace Selene
 {
     /// <summary>
-    /// Custom SessionInfo related with IWebDriver SessionId property.
+    /// Custom session data related with <see cref="OpenQA.Selenium.IWebDriver"/>`s <see cref=" OpenQA.Selenium.Remote.SessionId"/>.
     /// </summary>
     public class SessionInfo
     {

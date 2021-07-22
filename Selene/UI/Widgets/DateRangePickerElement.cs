@@ -3,18 +3,18 @@
 //  <date>2021-06-27</date>
 //-----------------------------------------------------------------------
 
-namespace Selene.WebElementModels.Widgets
+namespace Selene.UI.Widgets
 {
     using System;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.UI;
     using Selene.Helpers;
 
-    public class DateRangePicker : WebElementModel
+    public class DateRangePickerElement : UIElement
     {
         public string Format { get; set; } = "dd.MM.yyyy H:mm";
 
-        public IWebElement Dropdown => Driver.FindElement(By.CssSelector(".daterangepicker.dropdown-menu[style*='display: block']"));
+        public IWebElement Dropdown => driver.FindElement(By.CssSelector(".daterangepicker.dropdown-menu[style*='display: block']"));
 
         public IWebElement SelectHour => Dropdown.FindElement(By.CssSelector(".hourselect"));
 
@@ -26,7 +26,7 @@ namespace Selene.WebElementModels.Widgets
 
         public DateTime Date => GetDate();
 
-        public DateRangePicker(IWebDriver driver, IWebElement webElement)
+        public DateRangePickerElement(IWebDriver driver, IWebElement webElement)
             : base(driver, webElement)
         {
         }
@@ -38,11 +38,10 @@ namespace Selene.WebElementModels.Widgets
         public void EnterDate(string date)
         {
             Set.Text(this, date, true);
-    
             //Driver.WaitForAndSendKeys(WrappedElement, date, log);
         }
 
-        public void SelectDate(DateTime date, Action<string> log)
+        public void SelectDate(DateTime date)
         {
             WrappedElement.Click();
 
@@ -69,12 +68,12 @@ namespace Selene.WebElementModels.Widgets
 
             // m
 
-            Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
         }
 
         private DateTime GetDate()
         {
-            if (Get.Val(this) == string.Empty)
+            if (Get.Val(this)?.Length == 0)
             {
                 return DateTime.Today;
             }

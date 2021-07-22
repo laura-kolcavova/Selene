@@ -39,7 +39,7 @@ namespace Selene
                 obtainedDriver = createDriverFunc();
                 sessions.TryAdd(obtainedDriver.GetSessionId(), new SessionInfo());
             }
-            
+
             return obtainedDriver;
         }
 

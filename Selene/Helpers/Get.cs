@@ -11,7 +11,7 @@ namespace Selene.Helpers
     public static class Get
     {
         public static string Attr(IWebElement element, string attr)
-        {     
+        {
             return element.GetAttribute(attr);
         }
 

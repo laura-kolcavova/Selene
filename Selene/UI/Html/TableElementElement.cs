@@ -3,7 +3,7 @@
 //  <date>2021-06-27</date>
 //-----------------------------------------------------------------------
 
-namespace Selene.WebElementModels.Html
+namespace Selene.UI.Html
 {
     using OpenQA.Selenium;
     using OpenQA.Selenium.Internal;
@@ -12,13 +12,13 @@ namespace Selene.WebElementModels.Html
     using System.Collections.ObjectModel;
     using System.Linq;
 
-    public class TableElement : WebElementModel
+    public class TableElementElement : UIElement
     {
         public ReadOnlyCollection<TRow> Rows => GetTRows();
 
-        public TableElement(IWebDriver driver, IWebElement wrappedElement)
+        public TableElementElement(IWebDriver driver, IWebElement wrappedElement)
             : base(driver, wrappedElement)
-        {           
+        {
         }
 
         private ReadOnlyCollection<TRow> GetTRows()
@@ -57,7 +57,7 @@ namespace Selene.WebElementModels.Html
             }
 
             public TCol GetColByAttr(string attr, string value) =>
-                Cols.Where(c => Get.Attr(c, attr) == value).FirstOrDefault();
+                Cols.FirstOrDefault(c => Get.Attr(c, attr) == value);
         }
 
         public class TCol : IWrapsElement
@@ -68,8 +68,6 @@ namespace Selene.WebElementModels.Html
             {
                 WrappedElement = col;
             }
-
-
         }
     }
 }

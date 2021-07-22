@@ -3,18 +3,17 @@
 //  <date>2021-06-27</date>
 //-----------------------------------------------------------------------
 
-namespace Selene.WebElementModels.Html
+namespace Selene.UI.Html
 {
     using OpenQA.Selenium;
-    using Selene.Helpers;
 
-    public class RadioButton : WebElementModel
+    public class CheckBoxElement : UIElement
     {
-        public IWebElement Label => GetLabel();
+        public IWebElement Label => WrappedElement.FindElement(By.XPath($"//label[@for='{WrappedElement.GetAttribute("id")}']"));
 
         public bool Selected => WrappedElement.Selected;
 
-        public RadioButton(IWebDriver driver, IWebElement wrappedElement) : base(driver, wrappedElement)
+        public CheckBoxElement(IWebDriver driver, IWebElement wrappedElement) : base(driver, wrappedElement)
         {
         }
 
@@ -25,6 +24,7 @@ namespace Selene.WebElementModels.Html
 
         public void Check()
         {
+            // if (Get.Val(Element) == "false") Click();
             if (!Selected) Click();
         }
 
@@ -32,12 +32,5 @@ namespace Selene.WebElementModels.Html
         {
             if (Selected) Click();
         }
-
-        private IWebElement GetLabel()
-        {
-            string id = Get.Id(WrappedElement);
-            return WrappedElement.FindElement(By.XPath($"//label[@for='{id}']"));
-        }
-
     }
 }
