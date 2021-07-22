@@ -29,7 +29,7 @@ namespace Selene
            where TWebElementModel : WebElementModel
         {
             var wrappedElement = driver.FindElement(by);
-            var webElementModel = (TWebElementModel)Activator.CreateInstance(typeof(TWebElementModel), driver, wrappedElement);
+            var webElementModel = Activator.CreateInstance(typeof(TWebElementModel), driver, wrappedElement) as TWebElementModel;
             return webElementModel;
         }
 
@@ -48,7 +48,7 @@ namespace Selene
 
             foreach (var wrappedElement in wrappedElements)
             {
-                list.Add((TWebElementModel)Activator.CreateInstance(typeof(TWebElementModel), driver, wrappedElement));
+                list.Add(Activator.CreateInstance(typeof(TWebElementModel), driver, wrappedElement) as TWebElementModel);
             }
 
             return list.AsReadOnly();
