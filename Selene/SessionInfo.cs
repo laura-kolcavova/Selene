@@ -9,6 +9,7 @@ namespace Selene
     /// </summary>
     public class SessionInfo
     {
+
         /// <summary>
         /// Gets or sets a value indicating whether gets or sets LoggedIn value.
         /// </summary>

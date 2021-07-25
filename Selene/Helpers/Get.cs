@@ -8,8 +8,17 @@ namespace Selene.Helpers
     using OpenQA.Selenium;
     using OpenQA.Selenium.Internal;
 
+    /// <summary>
+    /// Methods for getting values from attributes of <see cref="IWebElement"/>.
+    /// </summary>
     public static class Get
     {
+        /// <summary>
+        /// Gets an attribute value.
+        /// </summary>
+        /// <param name="element">Target element.</param>
+        /// <param name="attr">Attribute name.</param>
+        /// <returns>attribute value as <see cref="string"/>.</returns>
         public static string Attr(IWebElement element, string attr)
         {
             return element.GetAttribute(attr);

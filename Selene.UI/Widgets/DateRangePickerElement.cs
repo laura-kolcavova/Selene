@@ -14,7 +14,7 @@ namespace Selene.UI.Widgets
     {
         public string Format { get; set; } = "dd.MM.yyyy H:mm";
 
-        public IWebElement Dropdown => driver.FindElement(By.CssSelector(".daterangepicker.dropdown-menu[style*='display: block']"));
+        public IWebElement Dropdown => Driver.FindElement(By.CssSelector(".daterangepicker.dropdown-menu[style*='display: block']"));
 
         public IWebElement SelectHour => Dropdown.FindElement(By.CssSelector(".hourselect"));
 
@@ -68,7 +68,7 @@ namespace Selene.UI.Widgets
 
             // m
 
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+            Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
         }
 
         private DateTime GetDate()

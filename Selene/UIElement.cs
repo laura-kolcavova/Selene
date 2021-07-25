@@ -2,15 +2,15 @@
 //  <author>Laura Kolčavová</author>
 //  <date>2021-06-27</date>
 //-----------------------------------------------------------------------
+
 namespace Selene
 {
     using OpenQA.Selenium;
     using OpenQA.Selenium.Internal;
-    using Selene.Extensions;
 
     public abstract class UIElement : IWrapsElement
     {
-        protected readonly IWebDriver driver;
+        protected readonly IWebDriver Driver;
 
         /// <summary>
         /// Gets WrappedElement
@@ -24,7 +24,7 @@ namespace Selene
         /// <param name="wrappedElement">Wrapped element.</param>
         protected UIElement(IWebDriver driver, IWebElement wrappedElement)
         {
-            this.driver = driver;
+            Driver = driver;
             WrappedElement = wrappedElement;
         }
 

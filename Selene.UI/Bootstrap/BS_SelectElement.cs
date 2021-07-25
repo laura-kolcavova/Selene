@@ -8,6 +8,7 @@ namespace Selene.UI.Bootstrap
     using OpenQA.Selenium;
     using OpenQA.Selenium.Support.UI;
     using Selene.Helpers;
+    using Selene.Extensions;
     using System.Collections.ObjectModel;
     using System.Linq;
 
@@ -41,7 +42,7 @@ namespace Selene.UI.Bootstrap
         private void OpenDropdownMenu()
         {
             DropdownToggle.Click();
-            driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(Listbox));
+            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(Listbox));
         }
 
         public void SelectByIndex(int index)
@@ -50,7 +51,7 @@ namespace Selene.UI.Bootstrap
 
             BS_Options[index].Click();
 
-            driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
+            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
         }
 
         public void SelectByValue(string value)
@@ -69,7 +70,7 @@ namespace Selene.UI.Bootstrap
 
             BS_Options[index].Click();
 
-            driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
+            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
         }
 
         public void SelectByText(string text)
@@ -79,7 +80,7 @@ namespace Selene.UI.Bootstrap
             BS_Options.FirstOrDefault(o => string.Equals(o.Text, text))?
                 .Click();
 
-            driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
+            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(DropdownMenu));
         }
 
         public void TypeInSearch(string value, bool clear = false)
@@ -90,7 +91,7 @@ namespace Selene.UI.Bootstrap
 
             Set.Text(TxtSearch, value, clear);
 
-            driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(Listbox));
+            Driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(Listbox));
         }
     }
 }

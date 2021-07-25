@@ -9,11 +9,16 @@ namespace Selene
 
     public static class Log
     {
-        private static readonly List<string> _log = new List<string>();
+        private static readonly List<string> Entries;
+
+        static Log()
+        {
+            Entries = new List<string>();
+        }
 
         public static void Entry(string message)
         {
-            _log.Add(message);
+            Entries.Add(message);
         }
 
         public static void Pass(string message)
@@ -43,7 +48,7 @@ namespace Selene
 
         public static IEnumerable<string> GetEntries()
         {
-            return _log;
+            return Entries;
         }
     }
 }

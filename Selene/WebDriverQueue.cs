@@ -2,6 +2,9 @@
 //  <author>Laura Kolčavová</author>
 //  <date>2021-06-27</date>
 //-----------------------------------------------------------------------
+
+using Selene.Extensions;
+
 namespace Selene
 {
     using System;
@@ -14,17 +17,17 @@ namespace Selene
     /// </summary>
     public class WebDriverQueue
     {
-        private readonly ConcurrentQueue<IWebDriver> driverQueue;
+        private readonly ConcurrentQueue<IWebDriver> _driverQueue;
 
-        private readonly ConcurrentDictionary<SessionId, SessionInfo> sessions;
+        private readonly ConcurrentDictionary<SessionId, SessionInfo> _sessions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebDriverQueue"/> class.
         /// </summary>
         public WebDriverQueue()
         {
-            driverQueue = new ConcurrentQueue<IWebDriver>();
-            sessions = new ConcurrentDictionary<SessionId, SessionInfo>();
+            _driverQueue = new ConcurrentQueue<IWebDriver>();
+            _sessions = new ConcurrentDictionary<SessionId, SessionInfo>();
         }
 
         /// <summary>
@@ -34,10 +37,10 @@ namespace Selene
         /// <returns>Current IWebDriver instance.</returns>
         public IWebDriver Obtain(Func<IWebDriver> createDriverFunc)
         {
-            if (!driverQueue.TryDequeue(out IWebDriver obtainedDriver))
+            if (!_driverQueue.TryDequeue(out IWebDriver obtainedDriver))
             {
                 obtainedDriver = createDriverFunc();
-                sessions.TryAdd(obtainedDriver.GetSessionId(), new SessionInfo());
+                _sessions.TryAdd(obtainedDriver.GetSessionId(), new SessionInfo());
             }
 
             return obtainedDriver;
@@ -54,7 +57,7 @@ namespace Selene
                 throw new ArgumentNullException(nameof(webDriver));
             }
 
-            driverQueue.Enqueue(webDriver);
+            _driverQueue.Enqueue(webDriver);
         }
 
         /// <summary>
@@ -64,7 +67,7 @@ namespace Selene
         /// <returns>SessionInfo | null.</returns>
         public SessionInfo GetSessionInfo(SessionId sessionId)
         {
-            if (sessions.TryGetValue(sessionId, out SessionInfo sessionInfo))
+            if (_sessions.TryGetValue(sessionId, out SessionInfo sessionInfo))
             {
                 return sessionInfo;
             }
@@ -79,13 +82,13 @@ namespace Selene
         /// </summary>
         public void QuitAllDrivers()
         {
-            while (driverQueue.TryDequeue(out IWebDriver driver))
+            while (_driverQueue.TryDequeue(out IWebDriver driver))
             {
                 driver.Close();
                 driver.Quit();
             }
 
-            sessions.Clear();
+            _sessions.Clear();
         }
     }
 }

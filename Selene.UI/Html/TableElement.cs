@@ -16,7 +16,7 @@ namespace Selene.UI.Html
     {
         public ReadOnlyCollection<TRow> Rows => GetTRows();
 
-        public TableElementElement(IWebDriver driver, IWebElement wrappedElement)
+        public TableElement(IWebDriver driver, IWebElement wrappedElement)
             : base(driver, wrappedElement)
         {
         }

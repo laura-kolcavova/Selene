@@ -3,7 +3,7 @@
 //  <date>2021-06-27</date>
 //-----------------------------------------------------------------------
 
-namespace Selene.UI
+namespace Selene.UI.Html
 {
     using OpenQA.Selenium;
     using Selene.Helpers;

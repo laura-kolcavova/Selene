@@ -10,7 +10,7 @@ namespace Selene.Pages
 {
     public abstract class Page : IView
     {
-        protected readonly IWebDriver driver;
+        protected readonly IWebDriver Driver;
 
         public List<PartialView> PartialViews { get; }
 
@@ -18,7 +18,7 @@ namespace Selene.Pages
 
         protected Page(IWebDriver driver)
         {
-            this.driver = driver;
+            this.Driver = driver;
             PartialViews = new List<PartialView>();
         }
 

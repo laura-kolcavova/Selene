@@ -2,6 +2,7 @@
 //  <author>Laura Kolčavová</author>
 //  <date>2021-06-27</date>
 //-----------------------------------------------------------------------
+
 namespace Selene.Helpers
 {
     using OpenQA.Selenium;

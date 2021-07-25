@@ -2,16 +2,16 @@
 //  <author>Laura Kolčavová</author>
 //  <date>2021-06-27</date>
 //-----------------------------------------------------------------------
-namespace Selene
+
+namespace Selene.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Interactions;
     using OpenQA.Selenium.Remote;
     using OpenQA.Selenium.Support.UI;
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-
     /// <summary>
     /// Extension methods for <see cref="IWebDriver"/> interface.
     /// </summary>
@@ -64,13 +64,13 @@ namespace Selene
         /// <summary>
         /// Gets parameter value from current URL.
         /// </summary>
-        /// <param name="driver">Extented object.</param>
+        /// <param name="driver">Context.</param>
         /// <param name="name">Parameter name.</param>
         /// <returns>Parameter value.</returns>
         public static string GetUrlParam(this IWebDriver driver, string name)
         {
-            string param = name += "=";
-            int index = driver.Url.IndexOf(param);
+            var param = name += "=";
+            var index = driver.Url.IndexOf(param, StringComparison.Ordinal);
             return driver.Url[(index + param.Length)..];
         }
 
@@ -85,10 +85,7 @@ namespace Selene
         /// <returns>The expected condition`s return value.</returns>
         public static TResult WaitFor<TResult>(this IWebDriver driver, Func<IWebDriver, TResult> condition, TimeSpan? timeout = null, params Type[] exceptionTypes)
         {
-            if (!timeout.HasValue)
-            {
-                timeout = TimeSpan.FromSeconds(Options.WaitSeconds);
-            }
+            timeout ??= TimeSpan.FromSeconds(Options.WaitSeconds);
 
             var wait = new WebDriverWait(driver, timeout.Value);
 

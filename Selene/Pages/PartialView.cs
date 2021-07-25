@@ -9,13 +9,13 @@ namespace Selene.Pages
 
     public abstract class PartialView : IView
     {
-        protected readonly IWebDriver driver;
+        protected readonly IWebDriver Driver;
 
         public Page Parent { get; }
 
         protected PartialView(IWebDriver driver, Page parent)
         {
-            this.driver = driver;
+            this.Driver = driver;
             Parent = parent;
         }
 

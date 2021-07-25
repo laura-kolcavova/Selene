@@ -8,11 +8,11 @@ namespace Selene
 
     public abstract class UIComponent
     {
-        protected readonly IWebDriver driver;
+        protected readonly IWebDriver Driver;
 
         protected UIComponent(IWebDriver driver)
         {
-            this.driver = driver;
+            Driver = driver;
         }
     }
 }
