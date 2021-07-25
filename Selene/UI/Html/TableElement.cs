@@ -12,7 +12,7 @@ namespace Selene.UI.Html
     using System.Collections.ObjectModel;
     using System.Linq;
 
-    public class TableElementElement : UIElement
+    public class TableElement : UIElement
     {
         public ReadOnlyCollection<TRow> Rows => GetTRows();
 
