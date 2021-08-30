@@ -1,90 +1,110 @@
-﻿//-----------------------------------------------------------------------
-//  <author>Laura Kolčavová</author>
-//  <date>2021-06-27</date>
-//-----------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// <copyright file="Performer.cs" company="Laura Kolcavova">
+// Copyright (c) Laura Kolcavova. All rights reserved.
+// </copyright>
+// -----------------------------------------------------------------------
 
 namespace Selene
 {
     using System;
 
+    /// <summary>
+    /// Defines a set of helper methods for invoking delegate methods in try-catch blocks.
+    /// </summary>
     public static class Performer
     {
-        public static void Do(Action action, string logMessage)
+        /// <summary>
+        /// Invokes an <see cref="Action"/> delegate in try-catch block.
+        /// Stores action description in format specified as pass or fail level (as result of try-catch block) by given <see cref="Logger"/> instance.
+        /// Throws exception from catch block.
+        /// </summary>
+        /// <param name="action">The action delegate to be invoked in try-catch block.</param>
+        /// <param name="actionDescription">The action description used to store by <paramref name="logger"/>.</param>
+        /// <param name="logger">The <see cref="Logger"/> instance used to store action description.</param>
+        public static void Do(Action action, string actionDescription, Logger logger)
         {
             try
             {
                 action.Invoke();
-                Log.Pass(logMessage);
-            }
-            catch(Exception e)
-            {
-                logMessage += $" : {e.Message}";
-                Log.Fail(logMessage);
-                throw new Exception(e.Message, e);
-            }
-        }
-
-        public static void Do(Action<Record> recordedAction, Record record)
-        {
-            try
-            {
-                recordedAction.Invoke(record);
-                Log.Pass(record);
+                logger.Pass(actionDescription);
             }
             catch (Exception e)
             {
-                record.Error = e.Message;
-                Log.Fail(record);
-                throw new Exception(e.Message, e);
+                logger.Fail(actionDescription, e.Message);
+                throw;
             }
         }
 
-        public static TResult Try<TResult>(Func<TResult> action, out TResult result)
+        /// <summary>
+        /// Invokes an <see cref="Action"/> delegate in try-catch block.
+        /// Stores string representation of <see cref="LogEntry"/> instance in format specified as pass or fail level (as result of try-catch block) by given <see cref="Logger"/> instance.
+        /// Throws exception from catch block.
+        /// </summary>
+        /// <param name="action">The action delegate to be invoked in try-catch block.</param>
+        /// <param name="logEntry">The <see cref="LogEntry"/> instance used to store by <paramref name="logger"/>.</param>
+        /// <param name="logger">The <see cref="Logger"/> instance used to store action description.</param>
+        public static void Do(Action action, LogEntry logEntry, Logger logger)
+        {
+            Do(action, logEntry.ToString(), logger);
+        }
+
+        /// <summary>
+        /// Attempts to invoke an <see cref="Action"/> delegate in try-catch block.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the return value of the method that the delegate encapsulates.</typeparam>
+        /// <param name="action">The action delegate to be invoked in try-catch block.</param>
+        /// <returns>The return value of the method that the delegate encapsulates.</returns>
+        public static TResult Try<TResult>(Func<TResult> action)
         {
             try
             {
-                result = action.Invoke();
+                return action.Invoke();
             }
             catch
             {
+                return default;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to invoke an <see cref="Action"/> delegate in try-catch block.
+        /// Stores action description in format specified as pass or fail level (as result of try-catch block) by given <see cref="Logger"/> instance.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the return value of the method that the delegate encapsulates.</typeparam>
+        /// <param name="action">The action delegate to be invoked in try-catch block.</param>
+        /// <param name="actionDescription">The action description used to store by <paramref name="logger"/>.</param>
+        /// <param name="logger">The <see cref="Logger"/> instance used to store action description.</param>
+        /// <returns>The return value of the method that the delegate encapsulates.</returns>
+        public static TResult Try<TResult>(Func<TResult> action, string actionDescription, Logger logger)
+        {
+            TResult result;
+
+            try
+            {
+                result = action.Invoke();
+                logger.Pass(actionDescription);
+            }
+            catch (Exception e)
+            {
                 result = default;
+                logger.Fail(actionDescription, e.Message);
             }
 
             return result;
         }
 
-        public static TResult Try<TResult>(Func<TResult> recordedAction, string logMessage, out TResult result)
+        /// <summary>
+        /// Attempts to invoke an <see cref="Action"/> delegate in try-catch block.
+        /// Stores string representation of <see cref="LogEntry"/> instance in format specified as pass or fail level (as result of try-catch block) by given <see cref="Logger"/> instance.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the return value of the method that the delegate encapsulates.</typeparam>
+        /// <param name="action">The action delegate to be invoked in try-catch block.</param>
+        /// <param name="logEntry">The <see cref="LogEntry"/> instance used to store by <paramref name="logger"/>.</param>
+        /// <param name="logger">The <see cref="Logger"/> instance used to store action description.</param>
+        /// <returns>The return value of the method that the delegate encapsulates.</returns>
+        public static TResult Try<TResult>(Func<TResult> action, LogEntry logEntry, Logger logger)
         {
-            try
-            {
-                result = recordedAction.Invoke();
-                Log.Pass(logMessage);
-            }
-            catch (Exception e)
-            {
-                result = default;
-                logMessage += $" : {e.Message}";
-                Log.Fail(logMessage);
-            }
-
-            return result;
-        }
-
-        public static TResult Try<TResult>(Func<Record, TResult> recordedAction, Record record, out TResult result)
-        {
-            try
-            {
-                result = recordedAction.Invoke(record);
-                Log.Pass(record);
-            }
-            catch (Exception e)
-            {
-                result = default;
-                record.Error = e.Message;
-                Log.Fail(record);
-            }
-
-            return result;
+            return Try(action, logEntry.ToString(), logger);
         }
     }
 }

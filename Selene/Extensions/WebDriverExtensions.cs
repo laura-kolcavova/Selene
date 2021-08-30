@@ -1,7 +1,8 @@
-﻿//-----------------------------------------------------------------------
-//  <author>Laura Kolčavová</author>
-//  <date>2021-06-27</date>
-//-----------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// <copyright file="WebDriverExtensions.cs" company="Laura Kolcavova">
+// Copyright (c) Laura Kolcavova. All rights reserved.
+// </copyright>
+// -----------------------------------------------------------------------
 
 namespace Selene.Extensions
 {
@@ -12,8 +13,9 @@ namespace Selene.Extensions
     using OpenQA.Selenium.Interactions;
     using OpenQA.Selenium.Remote;
     using OpenQA.Selenium.Support.UI;
+
     /// <summary>
-    /// Extension methods for <see cref="IWebDriver"/> interface.
+    /// A set of extension methods for <see cref="IWebDriver"/> interface.
     /// </summary>
     public static class WebDriverExtensions
     {
@@ -59,6 +61,11 @@ namespace Selene.Extensions
         public static SessionId GetSessionId(this IWebDriver driver)
         {
             return ((RemoteWebDriver)driver).SessionId;
+        }
+
+        public static Dictionary<string, object> GetSessionData(this IWebDriver driver)
+        {
+            return SessionDataStorage.TryGet(driver.GetSessionId());
         }
 
         /// <summary>
@@ -122,8 +129,7 @@ namespace Selene.Extensions
         /// <param name="url">The relative URL to load. It is best to use a fully qualified URL</param>
         public static void NavigateToRelativeUrl(this IWebDriver driver, string url)
         {
-            var oldUrl = driver.Url;
-            var newUrl = new Uri(Options.AppUrl).AbsolutePath;
+            var newUrl = Options.AppUrl;
 
             if (!string.IsNullOrWhiteSpace(url))
             {
@@ -135,15 +141,7 @@ namespace Selene.Extensions
                 newUrl += url;
             }
 
-            if (!string.Equals(oldUrl, newUrl))
-            {
-                driver.Navigate().GoToUrl(newUrl);
-                driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.UrlToBe(newUrl));
-            }
-            else
-            {
-                driver.Navigate().Refresh();
-            }
+            driver.NavigateToUrl(newUrl);
         }
 
         /// <summary>

@@ -1,55 +1,49 @@
-﻿//-----------------------------------------------------------------------
-//  <author>Laura Kolčavová</author>
-//  <date>2021-06-27</date>
-//-----------------------------------------------------------------------
-
-using Selene.Extensions;
+﻿// -----------------------------------------------------------------------
+// <copyright file="WebDriverQueue.cs" company="Laura Kolcavova">
+// Copyright (c) Laura Kolcavova. All rights reserved.
+// </copyright>
+// -----------------------------------------------------------------------
 
 namespace Selene
 {
     using System;
     using System.Collections.Concurrent;
     using OpenQA.Selenium;
-    using OpenQA.Selenium.Remote;
 
     /// <summary>
-    /// Wrapper class for IWebDriver ConcurrentQueue.
+    /// Represents a <see cref="ConcurrentQueue{T}"/> of WebDriver instances.
     /// </summary>
     public class WebDriverQueue
     {
-        private readonly ConcurrentQueue<IWebDriver> _driverQueue;
-
-        private readonly ConcurrentDictionary<SessionId, SessionInfo> _sessions;
+        private readonly ConcurrentQueue<IWebDriver> driverQueue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebDriverQueue"/> class.
         /// </summary>
         public WebDriverQueue()
         {
-            _driverQueue = new ConcurrentQueue<IWebDriver>();
-            _sessions = new ConcurrentDictionary<SessionId, SessionInfo>();
+            this.driverQueue = new ConcurrentQueue<IWebDriver>();
         }
 
         /// <summary>
-        /// Tries to obtain WebDriver from queue or creates new WebDriver instance if queue is empty.
+        /// Attempts to obtain previously created instance of WebDriver from queue or creates new instance of WebDriver by specified delegate if queue is empty.
         /// </summary>
-        /// <param name="createDriverFunc">Delegate function for creating WebDriver instance.</param>
-        /// <returns>Current IWebDriver instance.</returns>
-        public IWebDriver Obtain(Func<IWebDriver> createDriverFunc)
+        /// <param name="createDriverMethod">The delegate used to create WebDriver instance.</param>
+        /// <returns>Previously created instance of WebDriver obtained from queue if queue is not empty; otherwise, new instance of WebDriver.</returns>
+        public IWebDriver Obtain(Func<IWebDriver> createDriverMethod)
         {
-            if (!_driverQueue.TryDequeue(out IWebDriver obtainedDriver))
+            if (!this.driverQueue.TryDequeue(out IWebDriver obtainedDriver))
             {
-                obtainedDriver = createDriverFunc();
-                _sessions.TryAdd(obtainedDriver.GetSessionId(), new SessionInfo());
+                obtainedDriver = createDriverMethod();
             }
 
             return obtainedDriver;
         }
 
         /// <summary>
-        /// Adds IWebDriver instance to the end of queue.
+        /// Adds WebDriver instance to the end of queue.
         /// </summary>
-        /// <param name="webDriver">IWebDriver instance to enqueue.</param>
+        /// <param name="webDriver">A WebDriver instance used to add to the end of queue.</param>
         public void Free(IWebDriver webDriver)
         {
             if (webDriver == null)
@@ -57,38 +51,19 @@ namespace Selene
                 throw new ArgumentNullException(nameof(webDriver));
             }
 
-            _driverQueue.Enqueue(webDriver);
+            this.driverQueue.Enqueue(webDriver);
         }
 
         /// <summary>
-        /// Gets SessionInfo by SessionId of IWebDriver Instance.
-        /// </summary>
-        /// <param name="sessionId">SessionId of IWebDriver Instance.</param>
-        /// <returns>SessionInfo | null.</returns>
-        public SessionInfo GetSessionInfo(SessionId sessionId)
-        {
-            if (_sessions.TryGetValue(sessionId, out SessionInfo sessionInfo))
-            {
-                return sessionInfo;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Close and quit all drivers and remove them from queue.
+        /// Close and quit all WebDriver instances and clears whole queue.
         /// </summary>
         public void QuitAllDrivers()
         {
-            while (_driverQueue.TryDequeue(out IWebDriver driver))
+            while (this.driverQueue.TryDequeue(out IWebDriver driver))
             {
                 driver.Close();
                 driver.Quit();
             }
-
-            _sessions.Clear();
         }
     }
 }

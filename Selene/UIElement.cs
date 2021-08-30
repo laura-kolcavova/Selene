@@ -1,32 +1,39 @@
-﻿//-----------------------------------------------------------------------
-//  <author>Laura Kolčavová</author>
-//  <date>2021-06-27</date>
-//-----------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
+// <copyright file="UIElement.cs" company="Laura Kolcavova">
+// Copyright (c) Laura Kolcavova. All rights reserved.
+// </copyright>
+// -----------------------------------------------------------------------
 
 namespace Selene
 {
     using OpenQA.Selenium;
     using OpenQA.Selenium.Internal;
 
+    /// <summary>
+    /// Defines a custom <see cref="IWrapsElement"/> object which encapsulates specified <see cref="IWrapsElement"/> instance.
+    /// </summary>
     public abstract class UIElement : IWrapsElement
     {
-        protected readonly IWebDriver Driver;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UIElement"/> class.
+        /// </summary>
+        /// <param name="driver">A WebDriver instance.</param>
+        /// <param name="wrappedElement">An <see cref="IWebElement"/> instance used to be wrapped by this <see cref="UIElement"/>.</param>
+        protected UIElement(IWebDriver driver, IWebElement wrappedElement)
+        {
+            this.Driver = driver;
+            this.WrappedElement = wrappedElement;
+        }
 
         /// <summary>
-        /// Gets WrappedElement
+        /// Gets <see cref="IWebElement"/> instance which is wrapped by this <see cref="UIElement"/>.
         /// </summary>
         public IWebElement WrappedElement { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UIElement"/> class.
+        /// Gets WebDriver instance.
         /// </summary>
-        /// <param name="driver">Web driver.</param>
-        /// <param name="wrappedElement">Wrapped element.</param>
-        protected UIElement(IWebDriver driver, IWebElement wrappedElement)
-        {
-            Driver = driver;
-            WrappedElement = wrappedElement;
-        }
+        protected IWebDriver Driver { get; }
 
         //protected UIElement(IWebElement wrappedElement)
         //{

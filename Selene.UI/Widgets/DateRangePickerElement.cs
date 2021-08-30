@@ -32,7 +32,7 @@ namespace Selene.UI.Widgets
         }
         public void EnterDate(DateTime date)
         {
-            EnterDate(Helpers.Format.DateToString(date, Format));
+            EnterDate(Helpers.FormatHelper.DateToString(date, Format));
         }
 
         public void EnterDate(string date)
@@ -79,7 +79,7 @@ namespace Selene.UI.Widgets
             }
             else
             {
-                return Helpers.Format.StringToDate(Get.Val(this), Format);
+                return Helpers.FormatHelper.StringToDate(Get.Val(this), Format);
             }
         }
 
