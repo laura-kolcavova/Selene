@@ -42,7 +42,7 @@ namespace Selene
         }
 
         /// <summary>
-        /// Attempts to remove session data associated with specified <see cref="SessionId"/> instance from the storage.
+        /// Attempts to remove session data associated with specified <see cref="RemoteWebDriver.SessionId"/> instance from the storage.
         /// </summary>
         /// <param name="sessionId"><see cref="SessionId"/> instace used as key.</param>
         /// /// <returns>true if the object was removed successfully; otherwise, false.</returns>
@@ -52,7 +52,7 @@ namespace Selene
         }
 
         /// <summary>
-        /// Attempts to get session data associated with specified <see cref="SessionId"/> instance from the storage.
+        /// Attempts to get session data associated with specified <see cref="RemoteWebDriver.SessionId"/> instance from the storage.
         /// </summary>
         /// <param name="sessionId"><see cref="SessionId"/> instace used as key.</param>
         /// <returns>session data if key was found in the storage; otherwise, null.</returns>

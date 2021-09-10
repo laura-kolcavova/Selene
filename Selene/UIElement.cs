@@ -35,10 +35,13 @@ namespace Selene
         /// </summary>
         protected IWebDriver Driver { get; }
 
-        //protected UIElement(IWebElement wrappedElement)
-        //{
-        //    this.driver = wrappedElement.GetDriver();
-        //    WrappedElement = wrappedElement;
-        //}
+#pragma warning disable SA1005 // Single line comments should begin with single space
+
+                              //protected UIElement(IWebElement wrappedElement)
+                              //{
+                              //    this.driver = wrappedElement.GetDriver();
+                              //    WrappedElement = wrappedElement;
+                              //}
     }
+#pragma warning restore SA1005 // Single line comments should begin with single space
 }

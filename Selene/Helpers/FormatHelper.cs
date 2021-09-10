@@ -38,7 +38,7 @@ namespace Selene.Helpers
         /// <summary>
         /// Converts <see cref="string"/> value to <see cref="TimeSpan"/> using given format convention.
         /// </summary>
-        /// <param name="date">Source value.</param>
+        /// <param name="time">Source value.</param>
         /// <param name="format">Format convention.</param>
         /// <returns>Converted value as <see cref="TimeSpan"/>.</returns>
         public static TimeSpan StringToTime(string time, string format = @"hh\:mm")
@@ -46,6 +46,12 @@ namespace Selene.Helpers
             return TimeSpan.ParseExact(time, format, null);
         }
 
+        /// <summary>
+        /// Converts <see cref="TimeSpan"/> value to <see cref="string"/> using given format convention.
+        /// </summary>
+        /// <param name="time">Source value.</param>
+        /// <param name="format">Format convention.</param>
+        /// <returns>Converted value as <see cref="string"/>.</returns>
         public static string TimeToString(TimeSpan time, string format = @"hh\:mm")
         {
             return time.ToString(format);

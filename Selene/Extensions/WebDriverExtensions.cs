@@ -54,15 +54,20 @@ namespace Selene.Extensions
         }
 
         /// <summary>
-        /// Gets <see cref="SessionId"/> from <see cref="IWebDriver"/>.
+        /// Gets <see cref="RemoteWebDriver.SessionId"/> for the current session of this driver.
         /// </summary>
-        /// <param name="driver">Context.</param>
-        /// <returns><see cref="SessionId"/>.</returns>
+        /// <param name="driver">The WebDriver instace used to get the SessionId.</param>
+        /// <returns>The <see cref="SessionId"/>.</returns>
         public static SessionId GetSessionId(this IWebDriver driver)
         {
             return ((RemoteWebDriver)driver).SessionId;
         }
 
+        /// <summary>
+        /// Gets session data associated with <see cref="RemoteWebDriver.SessionId"/> from <see cref="SessionDataStorage"/>.
+        /// </summary>
+        /// <param name="driver">The WebDriver instance used to get session data.</param>
+        /// <returns>The session data.</returns>
         public static Dictionary<string, object> GetSessionData(this IWebDriver driver)
         {
             return SessionDataStorage.TryGet(driver.GetSessionId());
@@ -78,11 +83,11 @@ namespace Selene.Extensions
         {
             var param = name += "=";
             var index = driver.Url.IndexOf(param, StringComparison.Ordinal);
-            return driver.Url[(index + param.Length)..];
+            return driver.Url[(index + param.Length) ..];
         }
 
         /// <summary>
-        /// Performs <see cref="DefaultWait{IWebDriver}.Until{TResult}(Func{IWebDriver, TResult})"/> method using the given expected condition delegate nad timeout expiration.
+        /// Performs <see cref="DefaultWait{IWebDriver}.Until{TResult}(Func{IWebDriver, TResult})"/> method using the given expected condition delegate and timeout expiration.
         /// </summary>
         /// <typeparam name="TResult">Returned value from expected condition.</typeparam>
         /// <param name="driver">Context.</param>
@@ -92,7 +97,7 @@ namespace Selene.Extensions
         /// <returns>The expected condition`s return value.</returns>
         public static TResult WaitFor<TResult>(this IWebDriver driver, Func<IWebDriver, TResult> condition, TimeSpan? timeout = null, params Type[] exceptionTypes)
         {
-            timeout ??= TimeSpan.FromSeconds(Options.WaitSeconds);
+            timeout ??= TimeSpan.FromSeconds(SeleneTest.Options.WaitSeconds);
 
             var wait = new WebDriverWait(driver, timeout.Value);
 
@@ -105,7 +110,7 @@ namespace Selene.Extensions
         /// Loads a new web page at given URL and then waits to redirect is finished or refreshes page if the URL is the same.
         /// </summary>
         /// <param name="driver">Context.</param>
-        /// <param name="url">The URL to load. It is best to use a fully qualified URL</param>
+        /// <param name="url">The URL to load. It is best to use a fully qualified URL.</param>
         public static void NavigateToUrl(this IWebDriver driver, string url)
         {
             var oldUrl = driver.Url;
@@ -114,7 +119,10 @@ namespace Selene.Extensions
             if (!string.Equals(oldUrl, newUrl))
             {
                 driver.Navigate().GoToUrl(newUrl);
-                driver.WaitFor(SeleniumExtras.WaitHelpers.ExpectedConditions.UrlToBe(newUrl));
+                driver.WaitFor(d =>
+                {
+                    return d.Url != oldUrl;
+                });
             }
             else
             {
@@ -125,11 +133,11 @@ namespace Selene.Extensions
         /// <summary>
         /// Loads a new web page at given relative URL and then waits to redirect is finished or refreshes page if the URL is the same.
         /// </summary>
-        /// <param name="driver">Context</param>
-        /// <param name="url">The relative URL to load. It is best to use a fully qualified URL</param>
+        /// <param name="driver">Context.</param>
+        /// <param name="url">The relative URL to load. It is best to use a fully qualified URL.</param>
         public static void NavigateToRelativeUrl(this IWebDriver driver, string url)
         {
-            var newUrl = Options.AppUrl;
+            var newUrl = SeleneTest.Options.BaseUrl;
 
             if (!string.IsNullOrWhiteSpace(url))
             {
